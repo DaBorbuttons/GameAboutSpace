@@ -5,33 +5,52 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
 {
+    //Movimiento
     public float speed = 5;
     public float jump = 6;
     public float gravity = -20;
 
     private float hr, vr;
     public FixedJoystick joy;
-
+    
     Vector3 movIn = Vector3.zero;
     CharacterController ch;
+    //Movimiento
 
+    //Bala
     public GameObject bala;
-    public GameObject position;
-    Vector3 pos;
+    Vector3 posBala;
     public float tDisp = 0.5f;
     float sigDisp = 0.0f;
 
+    public GameObject balaFPS;
+    public GameObject balaTPS;
+
+    //Bala
+
+    //Posiciones de la camara
     public Camera cam;
     public GameObject camFPS;
     public GameObject camTPS;
-    bool fps = false;
+    //Posiciones de la camara
+
 
     private void Awake()
     {
         ch = GetComponent<CharacterController>();
+        cam.transform.position = camTPS.transform.position;
     }
+
     private void Update()
     {
+        if (cam.transform.position == camTPS.transform.position)
+        {
+            posBala = balaTPS.transform.position;
+        }
+        if (cam.transform.position == camFPS.transform.position)
+        {
+            posBala = balaFPS.transform.position;
+        }
         hr = joy.Horizontal;
         vr = joy.Vertical;
         Movemento();
@@ -66,24 +85,24 @@ public class PlayerController : MonoBehaviour
 
     public void Shoot()
     {
-        pos = position.transform.position;
+        //pos = position.transform.position;
         if (Time.time > sigDisp)
         {
             sigDisp = Time.time + tDisp;
-            Instantiate(bala, pos, Quaternion.identity);
+            Instantiate(bala, posBala, Quaternion.identity);
         }
     }
 
     public void CameraC()
     {
-        if (fps == false)
+        //La camara siempre inicia en 3ra persona
+       //Si la camara está en FP entonces la bala se dispara desde FP      
+        if (cam.transform.position == camTPS.transform.position)
         {
-            fps = true;
             cam.transform.position = camFPS.transform.position;
         }
         else
         {
-            fps = false;
             cam.transform.position = camTPS.transform.position;
         }
     }
